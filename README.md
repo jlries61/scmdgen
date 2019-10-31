@@ -1,0 +1,2 @@
+# scmdgen
+Small Command Generator
