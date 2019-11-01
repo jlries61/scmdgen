@@ -38,7 +38,7 @@ scmdgen --input=scmdgen_demo.txt N=1:10
 Instead of specifying a sequence, one could specify a set of arbitrary strings with which to replace the token.  For example,
 consider the following sequence (`bostn2a.txt`):
 ```
-HEAD fpath.cmd
+HEAD submit fpath
 HEAD use boston
 HEAD submit labels
 HEAD category chas
@@ -67,13 +67,13 @@ grove bostn2_LAD
 memo "Basic TN model on the Boston housing data"
 memo "LOSS=LAD"
 memo echo
-treenet loss=LS go
+treenet loss=LAD go
 output bostn2_LS
 grove bostn2_LS
 memo "Basic TN model on the Boston housing data"
 memo "LOSS=LS"
 memo echo
-treenet loss=HUBER go
+treenet loss=LS go
 output bostn2_HUBER
 grove bostn2_HUBER
 memo "Basic TN model on the Boston housing data"
