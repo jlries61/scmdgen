@@ -1,0 +1,107 @@
+#!/usr/bin/perl
+
+=head1 Name
+
+scmdgen - Expand a base command sequence as specified and optionally run it
+
+=head1 Version
+
+0.0
+
+=head1 Synopsis
+
+S<scmdgen --input=E<lt>filenameE<gt> --output=E<lt>filenameE<gt> --exec=E<lt>cmdnameE<gt> \>
+S<        --baseout=E<lt>nameE<gt> --baseext=E<lt>strE<gt> --use_values \>
+S<        --ncombo=E<lt>intE<gt> --rseed=E<lt>intE<gt> --headlabel=E<lt>strE<gt> \>
+S<        --taillabel=E<lt>strE<gt> [arguments...]>
+
+=head1 Arguments
+
+A series of one or more variable specifications of one of the following forms:
+
+=over
+
+=item E<lt>varnameE<gt>=E<lt>valueE<gt>
+
+Assign I<value> to the specified variable as a constant
+
+=item E<lt>varnameE<gt>=E<lt>valuelistE<gt>
+
+Assign the specified values, delimited by commas, to the specified variable.  The values may be
+either numeric or character.
+
+=item E<lt>varnameE<gt>=E<lt>nfirstE<gt>:E<lt>nlast>
+
+Assign the sequence of numbers from I<nfirst> to I<nlast> to the specified variable.  The values
+are incremented by 1.
+
+=item E<lt>varnameE<gt>=E<lt>nfirstE<gt>:E<lt><nlastE<gt>:E<lt>incE<gt>
+
+Same as above, except that the values are incremented by I<inc>.
+
+=back
+
+We recommend that variable names be upper case, but B<scmdgen> does not enforce this.  Variable
+names are case sensitive.
+
+=head1 Options
+
+=over
+
+=item --input=<filename>
+
+The name of the command file to be processed.  By default, the command sequence is read from
+standard input.
+
+=item --output=<filename>
+
+The name of the file to which the expanded output is to be written.  By default, it is written to
+standard output.
+
+=item --exec<cmdname>
+
+The name of the program which is to execute the command sequence (such as non-GUI SPM).
+The program must be able to accept commands via standard input.  If both this option and either
+B<--output> or B<--baseout> is specified, then the commands will be sent to both the program and the
+specified file(s).
+
+=item --baseout=<name>
+
+The base name of a series of command files that will be created (one per combination of variables).
+Names will be of the form <basename><id><ext>, where I<basename> is the base name, I<id> is an
+identifier for the value or combination of values, and I<ext> is the extension.
+If both B<--output> and B<--baseout> are written to then both types of output file are created.
+
+=item --baseext=<str>
+
+The extension to be used for output file names if B<--baseout> is specified (default=C<.cmd>).
+
+=item --use_values
+
+Construct the combination identifiers from the values of the variables used (constants excepted).
+By default, the identifier is a sequential integer.
+
+=item --ncombo=<int>
+
+The maximum number of combinations to use.  If the total number is more than this, then the
+combinations to be used are drawn at random.
+
+=item --rseed=<int>
+
+An integer which is to be used as the random number seed (default=37).
+
+=item --headlabel=<str>
+
+A string to be used to label lines in the input command stream that are to be placed at the
+beginning of the command sequence.  If multiple command files are written, then such lines appear
+first in all of them (default=C<HEAD>).
+
+=item --taillabel=<str>
+
+A string to be used to label lines in the input command stream that are to be placed at the end of
+the command sequence.  If multiple command files are written, then such lines appear
+last in all of them (default=C<TAIL>).
+
+=back
+
+=cut
