@@ -104,4 +104,87 @@ last in all of them (default=C<TAIL>).
 
 =back
 
+=head1 Description
+
+B<scmdgen> accepts a base command sequence either through standard input or from a file and expands
+it as specified by the user.  Here is an example input:
+
+ HEAD submit fpath
+ HEAD use boston
+ HEAD submit labels
+ HEAD category chas
+ HEAD model mv
+ output bostn2a_LOSSFUNC
+ grove bostn2a_LOSSFUNC
+ memo "Basic TN model on the Boston housing data"
+ memo "LOSS=LOSSFUNC"
+ memo echo
+ treenet loss=LOSSFUNC go
+
+If we vary I<LOSSFUNC>, we get output looking something like this:
+
+ submit fpath
+ use boston
+ submit labels
+ category chas
+ model mv
+ output bostn2_LAD
+ grove bostn2_LAD
+ memo "Basic TN model on the Boston housing data"
+ memo "LOSS=LAD"
+ memo echo
+ treenet loss=LS go
+ output bostn2_LS
+ grove bostn2_LS
+ memo "Basic TN model on the Boston housing data"
+ memo "LOSS=LS"
+ memo echo
+ treenet loss=HUBER go
+ output bostn2_HUBER
+ grove bostn2_HUBER
+ memo "Basic TN model on the Boston housing data"
+ memo "LOSS=HUBER"
+ memo echo
+ treenet loss=HUBER go
+ output bostn2_RF
+ grove bostn2_RF
+ memo "Basic TN model on the Boston housing data"
+ memo "LOSS=RF"
+ memo echo
+ treenet loss=RF go
+
+Submitted to SPM, we build four variants of the same model specification, each using a different
+loss function, saving all manner of typing and avoiding the errors associated with repetitive
+programming.
+
+If we wanted to write each model specification to a different command file, we invoke B<scmgen> as
+follows:
+
+ scmdgen --input=bostn2a.txt --baseout=bostn2a --use_values LOSSFUNC=LAD,LS,HUBER,RF
+
+In this case, we end up with four output files.  The first (F<bostn2a_LAD.cmd>) looks like this:
+
+ submit fpath
+ use boston
+ submit labels
+ category chas
+ model mv
+ output bostn2_LAD
+ grove bostn2_LAD
+ memo "Basic TN model on the Boston housing data"
+ memo "LOSS=LAD"
+ memo echo
+ treenet loss=LAD go
+
+We could also send the output directly to SPM with a command like this:
+
+ scmdgen --input=bostn2a.txt --exec=spmu LOSSFUNC=LAD,LS,HUBER,RF
+
+=head1 Copyright
+
+(C) 2019 John L. Ries.
+
+Copying and modifying of this script permitted under the terms of the GNU General Public License,
+Version 3; or at the recipient's option, any later version.
+
 =cut
