@@ -117,7 +117,7 @@ In this case, all possible combinations of `N` and `M` would be used.
 
 One could also limit the number of combinations generated, like so:
 ```
-scmdgen --input=2digit.txt --output=2digit50.cmd --ncombo=25 N=0:9 M=0:9
+scmdgen --input=2digit.txt --output=2digit25.cmd --ncombo=25 N=0:9 M=0:9
 ```
 In this case, 25 combinations, selected at random, would be used.
 
