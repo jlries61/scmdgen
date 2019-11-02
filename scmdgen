@@ -1,12 +1,28 @@
 #!/usr/bin/perl
 
+use boolean;
+use Getopt::Long;
+use Scalar::Util qw(looks_like_number);
+use Set::Tiny;
+
+sub empty(@);
+sub readlist($);
+sub readln($);
+sub odominc(\@%);
+sub sub($%);
+sub writeln($$);
+
+#Set constants
+$COMMA = ",";
+$SPACE = " ";
+
 =head1 Name
 
 scmdgen - Expand a base command sequence as specified and optionally run it
 
 =head1 Version
 
-0.0
+0.1
 
 =head1 Synopsis
 
@@ -14,35 +30,6 @@ S<scmdgen --input=E<lt>filenameE<gt> --output=E<lt>filenameE<gt> --exec=E<lt>cmd
 S<        --baseout=E<lt>nameE<gt> --baseext=E<lt>strE<gt> --use_values \>
 S<        --ncombo=E<lt>intE<gt> --rseed=E<lt>intE<gt> --headlabel=E<lt>strE<gt> \>
 S<        --taillabel=E<lt>strE<gt> [arguments...]>
-
-=head1 Arguments
-
-A series of one or more variable specifications of one of the following forms:
-
-=over
-
-=item E<lt>varnameE<gt>=E<lt>valueE<gt>
-
-Assign I<value> to the specified variable as a constant
-
-=item E<lt>varnameE<gt>=E<lt>valuelistE<gt>
-
-Assign the specified values, delimited by commas, to the specified variable.  The values may be
-either numeric or character.
-
-=item E<lt>varnameE<gt>=E<lt>nfirstE<gt>:E<lt>nlast>
-
-Assign the sequence of numbers from I<nfirst> to I<nlast> to the specified variable.  The values
-are incremented by 1.
-
-=item E<lt>varnameE<gt>=E<lt>nfirstE<gt>:E<lt><nlastE<gt>:E<lt>incE<gt>
-
-Same as above, except that the values are incremented by I<inc>.
-
-=back
-
-We recommend that variable names be upper case, but B<scmdgen> does not enforce this.  Variable
-names are case sensitive.
 
 =head1 Options
 
@@ -103,6 +90,128 @@ the command sequence.  If multiple command files are written, then such lines ap
 last in all of them (default=C<TAIL>).
 
 =back
+
+=cut
+
+#Set command line options
+$USEVALUES = false;
+$BASEEXT = ".cmd";
+$RSEED = 37;
+$HEADLABEL = "HEAD";
+$TAILLABEL = "TAIL";
+
+GetOptions(
+  "input=s" => \$INPUT,
+  "output=s" => \$OUTPUT,
+  "exec=s" => \$EXEC,
+  "baseout=s" => \$BASEOUT,
+  "baseext=s" => \$BASEEXT,
+  "use_values" => \$USEVALUES,
+  "ncombo=i" => \$NCOMBO,
+  "rseed=i" => \$RSEED,
+  "headlabel=s" => \$HEADLABEL,
+  "taillabel=s" => \$TAILLABEL) || die;
+
+=head1 Arguments
+
+A series of one or more variable specifications of one of the following forms:
+
+=over
+
+=item E<lt>varnameE<gt>=E<lt>valueE<gt>
+
+Assign I<value> to the specified variable as a constant
+
+=item E<lt>varnameE<gt>=E<lt>valuelistE<gt>
+
+Assign the specified values, delimited by commas, to the specified variable.  The values may be
+either numeric or character.
+
+=item E<lt>varnameE<gt>=E<lt>nfirstE<gt>:E<lt>nlast>
+
+Assign the sequence of numbers from I<nfirst> to I<nlast> to the specified variable.  The values
+are incremented by 1.
+
+=item E<lt>varnameE<gt>=E<lt>nfirstE<gt>:E<lt><nlastE<gt>:E<lt>incE<gt>
+
+Same as above, except that the values are incremented by I<inc>.
+
+=back
+
+We recommend that variable names be upper case, but B<scmdgen> does not enforce this.  Variable
+names are case sensitive.
+
+=cut
+
+$ARGC = @ARGV;
+if ($ARGC == 0) {
+  exec "perldoc $0\n";
+  exit;
+}
+my %spec;
+$varset = Set::Tiny->new();
+@varlist = ();
+foreach $arg (@ARGV) {
+  if (!($arg=~m/=/)) {die "Invalid argument $arg.\n"}
+  my ($varname, $value) = split("=", $arg);
+  my @value = ();
+  if ($varset->has($varname)) {
+    my $rvalue = $spec{$varname};
+    @value = @$rvalue;
+  } else {
+    push @varlist, $varname;
+    $varset->insert($varname);
+  }
+  if ($value=~m/:/) {
+    my ($first, $last, $inc) = split(":", $value);
+    if (!defined($inc)) {$inc = 1}
+    elsif ($inc <= 0) {die "Invalid argument $arg.  Only positive increments supported.\n"}
+    if ($last < $first) {
+      die "Invalid argument $arg.  Ranges must be ordered from smallest to largest.\n"}
+    if (!(looks_like_number($first) || looks_like_number($last))) {
+      die "Invalid argument $arg.  All values in ranges must be numeric.\n"}
+    if (abs($first) == inf || abs($last) == inf) {
+      die "Invalid argument $arg.  Infinite values not permitted.\n"}
+    for ($n = $first; $n <= $last; $n = $n + $inc) {push @value, $n}
+  } else {push @value, split($COMMA, $value)}
+  $spec{$varname} = \@value;
+}
+
+#Read in the input command sequence
+if (defined($INPUT)) {open STDIN, "<", $INPUT || die "Failure to open input file $INPUT\n"}
+@head = ();
+@body = ();
+@tail = ();
+while (!eof(STDIN)) {
+  my @inline = &readlist(STDIN);
+  if ($inline[0] eq $HEADLABEL) {
+    shift @inline;
+    push @head, join($SPACE, @inline);
+  } elsif ($inline[0] eq $TAILLABEL) {
+    shift @inline;
+    push @tail, join($SPACE, @inline);
+  } else {
+    push @body, join($SPACE, @inline);
+  }
+}
+
+#Compute combinations of values
+my %combos;
+$ncomb = 0;
+@odometer = ();
+while (my %combo = &odominc(\@odometer, \@varlist, %spec)) {$combos{$ncomb++} = \%combo}
+
+if (defined($OUTPUT)) {open STDOUT, ">", $OUTPUT || die "Failure to open output file $OUTPUT\n"}
+
+#Write expanded command sequence
+foreach my $line (@head) {&writeln(STDOUT, $line)}
+for (my $i = 0; $i < $ncomb; $i++) {
+  my %combo = %{$combos{$i}};
+  foreach my $line (@body) {&writeln(STDOUT, &sub($line, %combo))}
+}
+foreach my $line (@tail) {&writeln(STDOUT, $line)}
+
+=pod
 
 =head1 Description
 
@@ -188,3 +297,62 @@ Copying and modifying of this script permitted under the terms of the GNU Genera
 Version 3; or at the recipient's option, any later version.
 
 =cut
+
+sub empty(@) {
+  return (@_ == 0);
+}
+
+sub readlist($) {
+  my ($fh) = @_;
+  my $line = &readln($fh);
+  return split(/ +/, $line);
+}
+
+sub readln($) {
+  my ($fh) = @_;
+  my $line = <$fh>;
+  chomp $line;
+  return $line;
+}
+
+sub odominc(\@%) {
+  my ($podom, $pvarlist, %spec) = @_;
+  my $nvar = @varlist = @$pvarlist;
+  my %combo;
+  if (&empty(@$podom)) {foreach my $varname (@varlist) {push @$podom, 0}}
+  else {
+    my $nvar = @varlist;
+    my $ilast = $nvar - 1;
+    $$podom[$ilast]++;
+    for ($ivar = $ilast; $ivar >0; $ivar--) {
+      my $nval = @{$spec{$varlist[$ivar]}};
+      if ($$podom[$ivar] >= $nval) {
+        $$podom[$ivar - 1]++;
+        $$podom[$ivar] = 0;
+      } else {last}
+    }
+  }
+  my $nval = @{$spec{$varlist[0]}};
+  if ($$podom[0] < $nval) {
+    for (my $ivar = 0; $ivar < $nvar; $ivar++) {
+      my $varname = $varlist[$ivar];
+      my @value = @{$spec{$varname}};
+      $combo{$varname} = $value[$$podom[$ivar]];
+    }
+  } else {undef %combo}
+  return %combo;
+}
+
+sub sub($%) {
+  my ($line, %combo) = @_;
+  foreach my $varname (keys(%combo)) {
+    my $value = $combo{$varname};
+    $line=~s/$varname/$value/g;
+  }
+  return $line;
+}
+
+sub writeln($$) {
+  my ($fh, $line) = @_;
+  print $fh "$line\n";
+}
