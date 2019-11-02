@@ -203,7 +203,7 @@ while (my %combo = &odominc(\@odometer, \@varlist, %spec)) {$combos[$ncomb++] = 
 
 if (defined($OUTPUT)) {open STDOUT, ">", $OUTPUT || die "Failure to open output file $OUTPUT: $!\n"}
 
-if (defined($INPUT) || !defined($BASEOUT)) {
+if (defined($OUTPUT) || !defined($BASEOUT)) {
   #Write expanded command sequence
   foreach my $line (@head) {&writeln(STDOUT, $line)}
   for (my $i = 0; $i < $ncomb; $i++) {
