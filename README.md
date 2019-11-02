@@ -101,13 +101,13 @@ In this case, all possible combinations of `N` and `M` would be used.
 
 One could also limit the number of combinations generated, like so:
 ```
-scmdgen --input=2digit.txt --output=2digit50 --ncombo=25 N=0:9 M=0:9
+scmdgen --input=2digit.txt --output=2digit50.cmd --ncombo=25 N=0:9 M=0:9
 ```
 In this case, 25 combinations, selected at random, would be used.
 
 To use all odd values of `N` and all even values of `M`:
 ```
-scmdgen --input=2digit.txt --output=2digitoe N=0:8:2 M=1:9:2
+scmdgen --input=2digit.txt --output=2digitoe.cmd N=0:8:2 M=1:9:2
 ```
 In this case, 2 is the amount by which to increment the two variables.
 
