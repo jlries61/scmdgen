@@ -15,6 +15,7 @@ sub writeln($$);
 #Set constants
 $COMMA = ",";
 $SPACE = " ";
+$UNDERSCORE = "_";
 
 =head1 Name
 
@@ -177,7 +178,7 @@ foreach $arg (@ARGV) {
 }
 
 #Read in the input command sequence
-if (defined($INPUT)) {open STDIN, "<", $INPUT || die "Failure to open input file $INPUT\n"}
+if (defined($INPUT)) {open STDIN, "<", $INPUT || die "Failure to open input file $INPUT: $!\n"}
 @head = ();
 @body = ();
 @tail = ();
@@ -195,20 +196,44 @@ while (!eof(STDIN)) {
 }
 
 #Compute combinations of values
-my %combos;
+my @combos = ();
 $ncomb = 0;
 @odometer = ();
-while (my %combo = &odominc(\@odometer, \@varlist, %spec)) {$combos{$ncomb++} = \%combo}
+while (my %combo = &odominc(\@odometer, \@varlist, %spec)) {$combos[$ncomb++] = \%combo}
 
-if (defined($OUTPUT)) {open STDOUT, ">", $OUTPUT || die "Failure to open output file $OUTPUT\n"}
+if (defined($OUTPUT)) {open STDOUT, ">", $OUTPUT || die "Failure to open output file $OUTPUT: $!\n"}
 
-#Write expanded command sequence
-foreach my $line (@head) {&writeln(STDOUT, $line)}
-for (my $i = 0; $i < $ncomb; $i++) {
-  my %combo = %{$combos{$i}};
-  foreach my $line (@body) {&writeln(STDOUT, &sub($line, %combo))}
+if (defined($INPUT) || !defined($BASEOUT)) {
+  #Write expanded command sequence
+  foreach my $line (@head) {&writeln(STDOUT, $line)}
+  for (my $i = 0; $i < $ncomb; $i++) {
+    my %combo = %{$combos[$i]};
+    foreach my $line (@body) {&writeln(STDOUT, &sub($line, %combo))}
+  }
+  foreach my $line (@tail) {&writeln(STDOUT, $line)}
 }
-foreach my $line (@tail) {&writeln(STDOUT, $line)}
+if (defined($BASEOUT)) {
+  #Write individual output files
+  for (my $icomb = 0; $icomb < $ncomb; $icomb++) {
+    #Construct output file name
+    my $basename = $BASEOUT;
+    if ($USEVALUES) {
+      my %combo = %{$combos[$icomb]};
+      foreach my $varname (@varlist) {
+        my $nval = @{$spec{$varname}};
+        if ($nval < 2) {next}
+        $basename .= $UNDERSCORE.$combo{$varname};
+      }
+    } else {$basename .= $icomb}
+    my $outfile = $basename.$BASEEXT;
+    open OUTPUT, ">", $outfile || die "Failure to open output file $outfile: $!\n";
+    #Write expanded command sequence
+    foreach my $line (@head) {&writeln(OUTPUT, $line)}
+    foreach my $line (@body) {&writeln(OUTPUT, &sub($line, %combo))}
+    foreach my $line (@tail) {&writeln(OUTPUT, $line)}
+    close OUTPUT || die "Failure to close output file $outfile: $!\n";
+  }
+}
 
 =pod
 
