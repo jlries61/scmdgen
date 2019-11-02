@@ -8,6 +8,8 @@ Small Command Generator
 are supported:
 * `--input`
 * `--output`
+* `--headlabel`
+* `--taillabel`
 
 All of the argument types mentioned below are fully supported.
 
