@@ -6,8 +6,8 @@ Small Command Generator
 ## Status
 `scmdgen` is a work in progress and has not yet caught up with the documentation below.  This far, the following options
 are supported:
-* --input
-* --output
+* `--input`
+* `--output`
 
 All of the argument types mentioned below are fully supported.
 
