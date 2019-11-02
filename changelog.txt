@@ -1,0 +1,7 @@
+scmdgen Change Log
+
+0.1: Add basic functionality, plus support for the --input and --output flags.
+     If no arguments, display POD.  All planned flags are parsed, but only
+     the two mentioned above are used.
+
+0.0: POD (Plain Old Documentation)
