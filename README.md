@@ -107,7 +107,19 @@ treenet loss=RF go
 ```
 The resulting command file `bostn2a.cmd` could then be submitted to SPM and the four requested TreeNet models would be built.
 
-The command stream could even be submitted to SPM by `scmdgen` itself as follows:
+If one wanted to write the code to build each model to a separate command file, one could use the `--baseout` flag, like so:
+```
+scmdgen --input=bostn2a.txt --baseout=bostn2a LOSSFUNC=LAD,LS,HUBER,RF
+```
+
+This would create output files `bostn2a0.cmd`,  `bostn2a1.cmd`,  `bostn2a2.cmd`,  and `bostn2a3.cmd`.  To use the actual
+values in the names, one could specify the `--use-values` flag, like so:
+```
+scmdgen --input=bostn2a.txt --baseout=bostn2a --use_values LOSSFUNC=LAD,LS,HUBER,RF
+```
+This would instead create output files `bostn2a_LAD.cmd`, `bostn2a_LS.cmd`, `bostn2a_HUBER.cmd`, and `bostn2a_RF.cmd`.
+
+The command stream could be submitted to SPM by `scmdgen` itself as follows:
 ```
 scmdgen --input=bostn2a.txt --exec=spmu LOSSFUNC=LAD,LS,HUBER,RF
 ```
