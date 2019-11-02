@@ -1,7 +1,7 @@
 # scmdgen
 Small Command Generator
 
-`scmdgen` (pronounced 'smidgen' takes a base set of commands and expands it as specified by the user.  It is designed to work with [Salford Predictive Modeler (SPM)](https://salford-systems.com/SPM), but in theory, it should work with any programming language, or even with generic text files that have nothing to do with computer programming.
+`scmdgen` (pronounced 'smidgen') takes a base set of commands and expands it as specified by the user.  It is designed to work with [Salford Predictive Modeler (SPM)](https://salford-systems.com/SPM), but in theory, it should work with any programming language, or even with generic text files that have nothing to do with computer programming.
 
 ## Status
 `scmdgen` is a work in progress and has not yet caught up with the documentation below.  This far, the following options
