@@ -1,0 +1,4 @@
+HEAD output scmdgen_demo
+HEAD note "Count from 0 to 99"
+note "NM"
+TAIL quit

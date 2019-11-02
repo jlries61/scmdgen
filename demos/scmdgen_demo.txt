@@ -1,0 +1,4 @@
+HEAD output scmdgen_demo
+HEAD note "Count from one to ten"
+note "N"
+TAIL quit
