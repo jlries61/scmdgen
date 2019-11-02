@@ -202,13 +202,15 @@ while (my %combo = &odominc(\@odometer, \@varlist, %spec)) {$combos[$ncomb++] = 
 
 if (defined($OUTPUT)) {open STDOUT, ">", $OUTPUT || die "Failure to open output file $OUTPUT\n"}
 
-#Write expanded command sequence
-foreach my $line (@head) {&writeln(STDOUT, $line)}
-for (my $i = 0; $i < $ncomb; $i++) {
-  my %combo = %{$combos[$i]};
-  foreach my $line (@body) {&writeln(STDOUT, &sub($line, %combo))}
+if (defined($INPUT) || !defined($BASEOUT)) {
+  #Write expanded command sequence
+  foreach my $line (@head) {&writeln(STDOUT, $line)}
+  for (my $i = 0; $i < $ncomb; $i++) {
+    my %combo = %{$combos[$i]};
+    foreach my $line (@body) {&writeln(STDOUT, &sub($line, %combo))}
+  }
+  foreach my $line (@tail) {&writeln(STDOUT, $line)}
 }
-foreach my $line (@tail) {&writeln(STDOUT, $line)}
 
 =pod
 
