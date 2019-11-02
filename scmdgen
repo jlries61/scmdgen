@@ -26,10 +26,9 @@ scmdgen - Expand a base command sequence as specified and optionally run it
 
 =head1 Synopsis
 
-S<scmdgen --input=E<lt>filenameE<gt> --output=E<lt>filenameE<gt> --exec=E<lt>cmdnameE<gt> \>
-S<        --baseout=E<lt>nameE<gt> --baseext=E<lt>strE<gt> --use_values \>
-S<        --ncombo=E<lt>intE<gt> --rseed=E<lt>intE<gt> --headlabel=E<lt>strE<gt> \>
-S<        --taillabel=E<lt>strE<gt> [arguments...]>
+ scmdgen --input=<filename> --output=<filename> --exec=<cmdname> \
+         --baseout=<name> --baseext=<str> --use_values --ncombo=<int> \
+         --rseed=<int> --headlabel=<str> --taillabel=<str> [arguments...]
 
 =head1 Options
 
