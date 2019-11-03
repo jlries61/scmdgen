@@ -8,6 +8,9 @@ Small Command Generator
 are supported:
 * `--input`
 * `--output`
+* `--baseout`
+* `--baseext`
+* `--use_values`
 * `--headlabel`
 * `--taillabel`
 
