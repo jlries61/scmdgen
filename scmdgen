@@ -217,8 +217,8 @@ if (defined($BASEOUT)) {
   for (my $icomb = 0; $icomb < $ncomb; $icomb++) {
     #Construct output file name
     my $basename = $BASEOUT;
+    my %combo = %{$combos[$icomb]};
     if ($USEVALUES) {
-      my %combo = %{$combos[$icomb]};
       foreach my $varname (@varlist) {
         my $nval = @{$spec{$varname}};
         if ($nval < 2) {next}
