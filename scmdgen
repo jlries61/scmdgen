@@ -8,6 +8,7 @@ use Set::Tiny;
 sub empty(@);
 sub readlist($);
 sub readln($);
+sub rselect($$@);
 sub odominc(\@%);
 sub sub($%);
 sub writeln($$);
@@ -200,13 +201,17 @@ my @combos = ();
 $ncomb = 0;
 @odometer = ();
 while (my %combo = &odominc(\@odometer, \@varlist, %spec)) {$combos[$ncomb++] = \%combo}
+@index = 0 .. $ncomb-1;
+if (defined($NCOMBO) and $ncomb > $NCOMBO) {
+  @index = &rselect($NCOMBO, $RSEED, @index);
+}
 
 if (defined($OUTPUT)) {open STDOUT, ">", $OUTPUT || die "Failure to open output file $OUTPUT: $!\n"}
 
 if (defined($OUTPUT) || !defined($BASEOUT)) {
   #Write expanded command sequence
   foreach my $line (@head) {&writeln(STDOUT, $line)}
-  for (my $i = 0; $i < $ncomb; $i++) {
+  foreach my $i (@index) {
     my %combo = %{$combos[$i]};
     foreach my $line (@body) {&writeln(STDOUT, &sub($line, %combo))}
   }
@@ -365,6 +370,19 @@ sub odominc(\@%) {
     }
   } else {undef %combo}
   return %combo;
+}
+
+sub rselect($$@) {
+  my ($nselect, $rseed, @index) = @_;
+  srand $rseed;
+  my %random;
+  foreach my $i (@index) {
+    $random{$i} = rand();
+  }
+  my @seq = sort {$random{$a} <=> $random{$b}} @index;
+  my @select = ();
+  for (my $i = 0; $i < $nselect; $i++) {push @select, $seq[$i]}
+  return sort {$a <=> $b} @select;
 }
 
 sub sub($%) {
