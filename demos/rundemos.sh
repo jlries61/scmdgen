@@ -5,3 +5,4 @@ $SCMDGEN --input=bostn2a.txt --output=bostn2a.cmd --baseout=bostn2a \
          --use_values LOSSFUNC=LAD,LS,HUBER,RF
 $SCMDGEN --input=2digit.txt --output=2digit.cmd N=0:9 M=0:9
 $SCMDGEN --input=2digit.txt --output=2digitoe.cmd N=0:8:2 M=1:9:2
+$SCMDGEN --input=2digit.txt --output=2digitr5.cmd --ncombo=5 N=0:9 M=0:9
