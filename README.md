@@ -3,18 +3,7 @@ Small Command Generator
 
 `scmdgen` (pronounced 'smidgen') takes a base set of commands and expands it as specified by the user.  It is designed to work with [Salford Predictive Modeler (SPM)](https://salford-systems.com/SPM), but in theory, it should work with any programming language, or even with generic text files that have nothing to do with computer programming.
 
-## Status
-`scmdgen` is a work in progress and has not yet caught up with the documentation below.  This far, the following options
-are supported:
-* `--input`
-* `--output`
-* `--baseout`
-* `--baseext`
-* `--use_values`
-* `--headlabel`
-* `--taillabel`
-
-All of the argument types mentioned below are fully supported.
+Version 1.0 is in official release.  Yay!
 
 ## Prerequisites
 `scmdgen` is a [Perl](https://www.perl.org/) script.  The following modules are required:
@@ -144,3 +133,16 @@ scmdgen --input=2digit.txt --output=2digitoe.cmd N=0:8:2 M=1:9:2
 ```
 In this case, 2 is the amount by which to increment the two variables.
 
+One can pipe the output to a SPM like so:
+```
+scmdgen --input=bostn2a.txt LOSSFUNC=LAD,LS,HUBER,RF | spmu
+```
+But one can also use the `--exec` flag to do it directly like this:
+```
+scmdgen --input=bostn2a.txt --exec=spmu LOSSFUNC=LAD,LS,HUBER,RF
+```
+And because scmdgen will work with any program that accepts data from standard input, one can even send the output to a pager,
+like so:
+```
+scmdgen --input=bostn2a.txt --exec=most LOSSFUNC=LAD,LS,HUBER,RF
+```
