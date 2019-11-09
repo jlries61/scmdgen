@@ -12,6 +12,7 @@ sub rselect($$@);
 sub odominc(\@%);
 sub sub($%);
 sub writeln($$);
+sub writex($\@\@\@\@\@);
 
 #Set constants
 $COMMA = ",";
@@ -24,7 +25,7 @@ scmdgen - Expand a base command sequence as specified and optionally run it
 
 =head1 Version
 
-0.3
+1.0
 
 =head1 Synopsis
 
@@ -208,14 +209,12 @@ if (defined($NCOMBO) and $ncomb > $NCOMBO) {
 
 if (defined($OUTPUT)) {open STDOUT, ">", $OUTPUT || die "Failure to open output file $OUTPUT: $!\n"}
 
-if (defined($OUTPUT) || !defined($BASEOUT)) {
-  #Write expanded command sequence
-  foreach my $line (@head) {&writeln(STDOUT, $line)}
-  foreach my $i (@index) {
-    my %combo = %{$combos[$i]};
-    foreach my $line (@body) {&writeln(STDOUT, &sub($line, %combo))}
-  }
-  foreach my $line (@tail) {&writeln(STDOUT, $line)}
+if (defined($OUTPUT) || !(defined($BASEOUT) or defined($EXEC))) {
+  &writex(STDOUT, \@combos, \@index, \@head, \@body, \@tail)}
+if (defined($EXEC)) {
+  open OUTPIPE, "|-", $EXEC or die "Failure to open pipe to $EXEC: $!\n";
+  &writex(OUTPIPE, \@combos, \@index, \@head, \@body, \@tail);
+  close OUTPIPE or warn "Failure to close pipe to $EXEC: $!\n";
 }
 if (defined($BASEOUT)) {
   #Write individual output files
@@ -397,4 +396,15 @@ sub sub($%) {
 sub writeln($$) {
   my ($fh, $line) = @_;
   print $fh "$line\n";
+}
+
+sub writex($\@\@\@\@\@) {
+  #Write expanded command sequence
+  my ($fh, $pcombos, $pindex, $phead, $pbody, $ptail) = @_;
+  foreach my $line (@$phead) {&writeln($fh, $line)}
+  foreach my $i (@$pindex) {
+    my %combo = %{$$pcombos[$i]};
+    foreach my $line (@$pbody) {&writeln($fh, &sub($line, %combo))}
+  }
+  foreach my $line (@$ptail) {&writeln($fh, $line)}
 }
