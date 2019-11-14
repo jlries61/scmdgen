@@ -1,5 +1,14 @@
 scmdgen Change Log
 
+1.1: Add support for multiple combination specifications.
+
+1.0: Add support for --exec flag.  First major release
+
+0.3: Allow randomly selected combinations (--ncombo).
+
+0.2: Add support for multiple output files (--baseout, --baseext, and
+     --use_values flags).
+
 0.1: Add basic functionality, plus support for the --input and --output flags.
      If no arguments, display POD.  All planned flags are parsed, but only
      the two mentioned above are used.
