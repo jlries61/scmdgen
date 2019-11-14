@@ -1,0 +1,11 @@
+HEAD submit fpath
+HEAD use boston
+HEAD submit labels
+HEAD category chas
+HEAD model mv
+output bostn2bnNNODES
+grove bostn2bnNNODES
+memo "Basic TN model on the Boston housing data"
+memo "NTREES NNODES node trees"
+memo echo
+treenet learnrate=.01 trees=NTREES nodes=NNODES go
