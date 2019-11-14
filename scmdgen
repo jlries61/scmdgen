@@ -25,7 +25,7 @@ scmdgen - Expand a base command sequence as specified and optionally run it
 
 =head1 Version
 
-1.0
+1.1
 
 =head1 Synopsis
 
@@ -68,7 +68,9 @@ The extension to be used for output file names if B<--baseout> is specified (def
 =item --use_values
 
 Construct the combination identifiers from the values of the variables used (constants excepted).
-By default, the identifier is a sequential integer.
+By default, the identifier is a sequential integer.  For the convenience of the programmer,
+constants are only excepted if there is only a single set of combinations (no slashes appear among
+the arguments).
 
 =item --ncombo=<int>
 
