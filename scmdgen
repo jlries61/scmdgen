@@ -239,9 +239,12 @@ if (defined($BASEOUT)) {
     my $basename = $BASEOUT;
     my %combo = %{$combos[$icomb]};
     if ($USEVALUES) {
+      my @varlist = keys(%combo);
       foreach my $varname (@varlist) {
-        my $nval = @{$spec{$varname}};
-        if ($nval < 2) {next}
+        if ($nset == 0) { # If there is more than one, it gets too confusing
+          my $nval = @{$spec{$varname, $nset}};
+          if ($nval < 2) {next}
+        }
         $basename .= $UNDERSCORE.$combo{$varname};
       }
     } else {$basename .= $icomb}
@@ -369,18 +372,18 @@ sub odominc(\@$%) {
     my $ilast = $nvar - 1;
     $$podom[$ilast]++;
     for ($ivar = $ilast; $ivar >0; $ivar--) {
-      my $nval = @{$spec{$varlist[$ivar]}, $iset};
+      my $nval = @{$spec{$varlist[$ivar], $iset}};
       if ($$podom[$ivar] >= $nval) {
         $$podom[$ivar - 1]++;
         $$podom[$ivar] = 0;
       } else {last}
     }
   }
-  my $nval = @{$spec{$varlist[0]}};
+  my $nval = @{$spec{$varlist[0], $iset}};
   if ($$podom[0] < $nval) {
     for (my $ivar = 0; $ivar < $nvar; $ivar++) {
       my $varname = $varlist[$ivar];
-      my @value = @{$spec{$varname}};
+      my @value = @{$spec{$varname, $iset}};
       $combo{$varname} = $value[$$podom[$ivar]];
     }
   } elsif ($iset < $nset) {
