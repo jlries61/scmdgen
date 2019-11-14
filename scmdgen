@@ -9,7 +9,7 @@ sub empty(@);
 sub readlist($);
 sub readln($);
 sub rselect($$@);
-sub odominc(\@%);
+sub odominc(\@$%);
 sub sub($%);
 sub writeln($$);
 sub writex($\@\@\@\@\@);
@@ -138,6 +138,11 @@ are incremented by 1.
 
 Same as above, except that the values are incremented by I<inc>.
 
+=item /
+
+Separates sets of specifications that are to be applied sequentially.  Any limits imposed by
+B<--ncombo> are applied to the full set of combinations generated.
+
 =back
 
 We recommend that variable names be upper case, but B<scmdgen> does not enforce this.  Variable
@@ -150,10 +155,18 @@ if ($ARGC == 0) {
   exec "perldoc $0\n";
   exit;
 }
+my $nset = 0;
 my %spec;
 $varset = Set::Tiny->new();
 @varlist = ();
 foreach $arg (@ARGV) {
+  if ($arg eq "/") {
+    # Slash separates sets of variable specifications to be combined
+    $spec{$nset++} = \@varlist;
+    $varset->clear();
+    @varlist = ();
+    next;
+  }
   if (!($arg=~m/=/)) {die "Invalid argument $arg.\n"}
   my ($varname, $value) = split("=", $arg);
   my @value = ();
@@ -176,8 +189,10 @@ foreach $arg (@ARGV) {
       die "Invalid argument $arg.  Infinite values not permitted.\n"}
     for ($n = $first; $n <= $last; $n = $n + $inc) {push @value, $n}
   } else {push @value, split($COMMA, $value)}
-  $spec{$varname} = \@value;
+  $spec{$varname, $nset} = \@value;
 }
+$spec{$nset} = \@varlist; # $nset actually ends up being the maximum set index, which is more
+                          # convenient than the number of sets
 
 #Read in the input command sequence
 if (defined($INPUT)) {open STDIN, "<", $INPUT || die "Failure to open input file $INPUT: $!\n"}
@@ -201,7 +216,8 @@ while (!eof(STDIN)) {
 my @combos = ();
 $ncomb = 0;
 @odometer = ();
-while (my %combo = &odominc(\@odometer, \@varlist, %spec)) {$combos[$ncomb++] = \%combo}
+$iset = 0;  # This will be incremented inside of odominc
+while (my %combo = &odominc(\@odometer, $nset, %spec)) {$combos[$ncomb++] = \%combo}
 @index = 0 .. $ncomb-1;
 if (defined($NCOMBO) and $ncomb > $NCOMBO) {
   @index = &rselect($NCOMBO, $RSEED, @index);
@@ -343,9 +359,9 @@ sub readln($) {
   return $line;
 }
 
-sub odominc(\@%) {
-  my ($podom, $pvarlist, %spec) = @_;
-  my $nvar = @varlist = @$pvarlist;
+sub odominc(\@$%) {
+  my ($podom, $nset, %spec) = @_;
+  my $nvar = @varlist = @{$spec{$iset}};
   my %combo;
   if (&empty(@$podom)) {foreach my $varname (@varlist) {push @$podom, 0}}
   else {
@@ -353,7 +369,7 @@ sub odominc(\@%) {
     my $ilast = $nvar - 1;
     $$podom[$ilast]++;
     for ($ivar = $ilast; $ivar >0; $ivar--) {
-      my $nval = @{$spec{$varlist[$ivar]}};
+      my $nval = @{$spec{$varlist[$ivar]}, $iset};
       if ($$podom[$ivar] >= $nval) {
         $$podom[$ivar - 1]++;
         $$podom[$ivar] = 0;
@@ -367,6 +383,10 @@ sub odominc(\@%) {
       my @value = @{$spec{$varname}};
       $combo{$varname} = $value[$$podom[$ivar]];
     }
+  } elsif ($iset < $nset) {
+    $iset++;
+    @$podom = ();
+    %combo = &odominc($podom, $nset, %spec);
   } else {undef %combo}
   return %combo;
 }
