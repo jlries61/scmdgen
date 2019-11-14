@@ -6,3 +6,6 @@ $SCMDGEN --input=bostn2a.txt --output=bostn2a.cmd --baseout=bostn2a \
 $SCMDGEN --input=2digit.txt --output=2digit.cmd N=0:9 M=0:9
 $SCMDGEN --input=2digit.txt --output=2digitoe.cmd N=0:8:2 M=1:9:2
 $SCMDGEN --input=2digit.txt --output=2digitr5.cmd --ncombo=5 N=0:9 M=0:9
+$SCMDGEN --input=bostn2b.txt --output=bostn2b.cmd \
+         NNODES=2 NTREES=6000 / NNODES=4 NTREES=3000 / NNODES=6 NTREES=2000 / \
+         NNODES=8 NTREES=1500
