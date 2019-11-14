@@ -3,8 +3,6 @@ Small Command Generator
 
 `scmdgen` (pronounced 'smidgen') takes a base set of commands and expands it as specified by the user.  It is designed to work with [Salford Predictive Modeler (SPM)](https://salford-systems.com/SPM), but in theory, it should work with any programming language, or even with generic text files that have nothing to do with computer programming.
 
-Version 1.0 is in official release.  Yay!
-
 ## Prerequisites
 `scmdgen` is a [Perl](https://www.perl.org/) script.  The following modules are required:
 * boolean
@@ -145,4 +143,30 @@ And because scmdgen will work with any program that accepts data from standard i
 like so:
 ```
 scmdgen --input=bostn2a.txt --exec=most LOSSFUNC=LAD,LS,HUBER,RF
+```
+## Multiple Combination Sets
+While it is often convenient to be able to request all combinations of a particular set of parameters, or a randomly drawn subset thereof, it is often desirable to vary one parameter while keeping the others constant, or to vary two or more parameters in concert with each other.  `scmdgen` supports such cases by allowing the user to specify multiple sets of combinations, separated by "/".  The slashes are separate arguments and muse be separated from the neighboring arguments by spaces.  For example, consider the following base command file (`bostn2b.txt`).
+```
+HEAD submit fpath
+HEAD use boston
+HEAD submit labels
+HEAD category chas
+HEAD model mv
+output bostn2bnNNODES
+grove bostn2bnNNODES
+memo "Basic TN model on the Boston housing data"
+memo "NTREES NNODES node trees"
+memo echo
+treenet learnrate=.01 trees=NTREES nodes=NNODES go
+```
+To vary `NNNODES` and `NTREES`, keeping the product constant, we can invoke `scmdgen` as follows:
+```
+scmdgen --input=bostn2b.txt --output=bostn2b.cmd \
+         NNODES=2 NTREES=6000 / NNODES=4 NTREES=3000 / NNODES=6 NTREES=2000 / \
+         NNODES=8 NTREES=1500```
+```
+To vary `TREENET SUBSAMPLE` and `TREENET INFLUENCE` separately, holding the other constant, and piping the output to SPM for execution, one could invoke `scmdgen` like so:
+```
+scmdgen --input=bostn2c.txt --exec=spmu \
+        SUBSAMPLE=.2:1:.2 INFLUENCE=.1 / SUBSAMPLE=.5 INFLUENCE=0:.6:.1
 ```
