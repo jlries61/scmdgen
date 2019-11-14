@@ -1,0 +1,11 @@
+HEAD submit fpath
+HEAD use boston
+HEAD submit labels
+HEAD category chas
+HEAD model mv
+output "bostn2c_subSUBSAMPLE_infINFLUENCE.dat"
+grove "bostn2c_subSUBSAMPLE_infINFLUENCE.dat"
+memo "Basic TN model on the Boston housing data"
+memo "subsample=SUBSAMPLE influence=INFLUENCE"
+memo echo
+treenet learnrate=.01 trees=2000 nodes=6 subsample=SUBSAMPLE influence=INFLUENCE go

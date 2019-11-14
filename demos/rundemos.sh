@@ -9,3 +9,5 @@ $SCMDGEN --input=2digit.txt --output=2digitr5.cmd --ncombo=5 N=0:9 M=0:9
 $SCMDGEN --input=bostn2b.txt --output=bostn2b.cmd \
          NNODES=2 NTREES=6000 / NNODES=4 NTREES=3000 / NNODES=6 NTREES=2000 / \
          NNODES=8 NTREES=1500
+$SCMDGEN --input=bostn2c.txt --output=bostn2c.cmd \
+         SUBSAMPLE=.2:1:.2 INFLUENCE=.1 / SUBSAMPLE=.5 INFLUENCE=0:.6:.1
