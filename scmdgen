@@ -15,6 +15,7 @@ sub writeln($$);
 sub writex($\@\@\@\@\@);
 
 #Set constants
+$BLANK = "";
 $COMMA = ",";
 $SPACE = " ";
 $UNDERSCORE = "_";
@@ -25,13 +26,13 @@ scmdgen - Expand a base command sequence as specified and optionally run it
 
 =head1 Version
 
-1.1
+1.2
 
 =head1 Synopsis
 
  scmdgen --input=<filename> --output=<filename> --exec=<cmdname> \
          --baseout=<name> --baseext=<str> --use_values --ncombo=<int> \
-         --rseed=<int> --headlabel=<str> --taillabel=<str> [arguments...]
+         --rseed=<int> --headlabel=<str> --taillabel=<str> --dlm=<str> [arguments...]
 
 =head1 Options
 
@@ -93,6 +94,12 @@ A string to be used to label lines in the input command stream that are to be pl
 the command sequence.  If multiple command files are written, then such lines appear
 last in all of them (default=C<TAIL>).
 
+=item --dlm=<str>
+
+A character delimiter to be used to distinguish variables from regular text.  The delimiter will
+always surround the variable name.  For example, if the delimiter is "%", the variable I will be
+represented as "%I%".  By default, no delimiter is used.
+
 =back
 
 =cut
@@ -103,6 +110,7 @@ $BASEEXT = ".cmd";
 $RSEED = 37;
 $HEADLABEL = "HEAD";
 $TAILLABEL = "TAIL";
+$DLM = $BLANK;
 
 GetOptions(
   "input=s" => \$INPUT,
@@ -114,7 +122,8 @@ GetOptions(
   "ncombo=i" => \$NCOMBO,
   "rseed=i" => \$RSEED,
   "headlabel=s" => \$HEADLABEL,
-  "taillabel=s" => \$TAILLABEL) || die;
+  "taillabel=s" => \$TAILLABEL,
+  "dlm=s" => \$DLM) || die;
 
 =head1 Arguments
 
@@ -413,7 +422,8 @@ sub sub($%) {
   my ($line, %combo) = @_;
   foreach my $varname (keys(%combo)) {
     my $value = $combo{$varname};
-    $line=~s/$varname/$value/g;
+    my $pattern = quotemeta($DLM.$varname.$DLM);
+    $line=~s/$pattern/$value/g;
   }
   return $line;
 }
