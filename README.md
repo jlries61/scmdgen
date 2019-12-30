@@ -171,4 +171,4 @@ scmdgen --input=bostn2c.txt --exec=spmu \
         SUBSAMPLE=.2:1:.2 INFLUENCE=.1 / SUBSAMPLE=.5 INFLUENCE=0:.6:.1
 ```
 ## Delimited Variable Names
-To avoid confusion with regular text, it is sometimes desirable to surround variable names with a delimiter string.  For example, if the delimiter string is "%", the variable *I* would be represented as "%I%", and bare "I"s would be unchanged.  To specify such a delimiter (which could be, but probably shouldn't be more than one character), use the `--dlm` flag.
+To avoid confusion with literal text, it is sometimes desirable to surround variable names with a delimiter string.  For example, if the delimiter string is '%', the variable 'I' would be represented as '%I%'; conversely, with the delimiter removed, 'I' would be taken as literal text and thus would be unchanged.  To specify such a delimiter (which could be, but probably shouldn't be, more than one character), use the `--dlm` flag.
