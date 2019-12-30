@@ -1,5 +1,9 @@
 scmdgen Change Log
 
+1.2: Add support for --dlm flag.  Add code to force variables and delimiters
+to be taken by Perl as literal text instead of as a regular expression
+when substituting.
+
 1.1: Add support for multiple combination specifications.
 
 1.0: Add support for --exec flag.  First major release
