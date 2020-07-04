@@ -132,6 +132,9 @@ GetOptions(
   "dlm=s" => \$DLM,
   "nthreads=i" => \$NTHREADS) || die;
 
+if (defined($NCOMBO) and $NCOMBO <= 0) {die "--ncombo has to be positive.\n"}
+if ($NTHREADS <= 0) {die "--nthreads has to be positive.\n"}
+
 =head1 Arguments
 
 A series of one or more variable specifications of one of the following forms:
