@@ -32,7 +32,8 @@ scmdgen - Expand a base command sequence as specified and optionally run it
 
  scmdgen --input=<filename> --output=<filename> --exec=<cmdname> \
          --baseout=<name> --baseext=<str> --use_values --ncombo=<int> \
-         --rseed=<int> --headlabel=<str> --taillabel=<str> --dlm=<str> [arguments...]
+         --rseed=<int> --headlabel=<str> --taillabel=<str> --dlm=<str> \
+         --nthreads=<int>  [arguments...]
 
 =head1 Options
 
@@ -100,6 +101,10 @@ A character delimiter to be used to distinguish variables from regular text.  Th
 always surround the variable name.  For example, if the delimiter is "%", the variable I will be
 represented as "%I%".  By default, no delimiter is used.
 
+=item --nthreads=<int>
+
+The maximum number of processes to run at one time.
+
 =back
 
 =cut
@@ -111,6 +116,7 @@ $RSEED = 37;
 $HEADLABEL = "HEAD";
 $TAILLABEL = "TAIL";
 $DLM = $BLANK;
+$NTHREADS = 1;
 
 GetOptions(
   "input=s" => \$INPUT,
@@ -123,7 +129,8 @@ GetOptions(
   "rseed=i" => \$RSEED,
   "headlabel=s" => \$HEADLABEL,
   "taillabel=s" => \$TAILLABEL,
-  "dlm=s" => \$DLM) || die;
+  "dlm=s" => \$DLM,
+  "nthreads=i" => \$NTHREADS) || die;
 
 =head1 Arguments
 
