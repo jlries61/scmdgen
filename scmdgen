@@ -49,7 +49,7 @@ standard input.
 The name of the file to which the expanded output is to be written.  By default, it is written to
 standard output.
 
-=item --exec<cmdname>
+=item --exec=<cmdname>
 
 The name of the program which is to execute the command sequence (such as non-GUI SPM).
 The program must be able to accept commands via standard input.  If both this option and either
@@ -103,7 +103,8 @@ represented as "%I%".  By default, no delimiter is used.
 
 =item --nthreads=<int>
 
-The maximum number of processes to run at one time.
+The maximum number of processes to run at one time (default=1).  Has no effect if --exec is not
+defined.
 
 =back
 
