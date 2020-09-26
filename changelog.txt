@@ -1,7 +1,10 @@
 scmdgen Change Log
 
-1.21: Bug fix: In a variable specification, only treat the first "=" as a delimiter.  Any
+1.21: Bug fixes:
+  a.  In a variable specification, only treat the first "=" as a delimiter.  Any
       subsequent ones are treated as part of a value.
+  b.  Initialize the number of threads to 1.
+  c.  Enable --threads flag.
 
 1.2: Add support for --dlm flag.  Add code to force variables and delimiters
 to be taken by Perl as literal text instead of as a regular expression
