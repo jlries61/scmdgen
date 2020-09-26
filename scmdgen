@@ -111,6 +111,7 @@ $RSEED = 37;
 $HEADLABEL = "HEAD";
 $TAILLABEL = "TAIL";
 $DLM = $BLANK;
+$NTHREADS = 1;
 
 GetOptions(
   "input=s" => \$INPUT,
