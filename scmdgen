@@ -121,6 +121,7 @@ GetOptions(
   "baseext=s" => \$BASEEXT,
   "use_values" => \$USEVALUES,
   "ncombo=i" => \$NCOMBO,
+  "nthreads=i" => \$NTHREADS,
   "rseed=i" => \$RSEED,
   "headlabel=s" => \$HEADLABEL,
   "taillabel=s" => \$TAILLABEL,
