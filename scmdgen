@@ -32,7 +32,8 @@ scmdgen - Expand a base command sequence as specified and optionally run it
 
  scmdgen --input=<filename> --output=<filename> --exec=<cmdname> \
          --baseout=<name> --baseext=<str> --use_values --ncombo=<int> \
-         --rseed=<int> --headlabel=<str> --taillabel=<str> --dlm=<str> [arguments...]
+         --rseed=<int> --headlabel=<str> --taillabel=<str> --dlm=<str> \
+         --nthreads=<int>  [arguments...]
 
 =head1 Options
 
@@ -48,7 +49,7 @@ standard input.
 The name of the file to which the expanded output is to be written.  By default, it is written to
 standard output.
 
-=item --exec<cmdname>
+=item --exec=<cmdname>
 
 The name of the program which is to execute the command sequence (such as non-GUI SPM).
 The program must be able to accept commands via standard input.  If both this option and either
@@ -100,6 +101,11 @@ A character delimiter to be used to distinguish variables from regular text.  Th
 always surround the variable name.  For example, if the delimiter is "%", the variable I will be
 represented as "%I%".  By default, no delimiter is used.
 
+=item --nthreads=<int>
+
+The maximum number of processes to run at one time (default=1).  Has no effect if --exec is not
+defined.
+
 =back
 
 =cut
@@ -125,7 +131,11 @@ GetOptions(
   "rseed=i" => \$RSEED,
   "headlabel=s" => \$HEADLABEL,
   "taillabel=s" => \$TAILLABEL,
-  "dlm=s" => \$DLM) || die;
+  "dlm=s" => \$DLM,
+  "nthreads=i" => \$NTHREADS) || die;
+
+if (defined($NCOMBO) and $NCOMBO <= 0) {die "--ncombo has to be positive.\n"}
+if ($NTHREADS <= 0) {die "--nthreads has to be positive.\n"}
 
 =head1 Arguments
 
