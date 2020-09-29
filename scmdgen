@@ -244,11 +244,22 @@ if (defined($EXEC)) {
   if ($NTHREADS == 1) {
     open OUTPIPE, "|-", $EXEC or die "Failure to open pipe to $EXEC: $!\n";
     &writex(OUTPIPE, \@combos, \@index, \@head, \@body, \@tail);
-    close OUTPIPE or warn "Failure to close pipe to $EXEC: $!\n";
+    #close OUTPIPE or warn "Failure to close pipe to $EXEC: $!\n";
   } else {
     my @outpipe = ();
+    my %combos;
     for (my $ithread = 0; $ithread < $NTHREADS; $ithread++) {
       open $outpipe[$ithread] , "|-", $EXEC or die "Failure to open pipe to $EXEC: $!\n";
+      @{$combos{$ithread}} = ();
+    }
+    my $ithread = 0;
+    foreach $combo (@combos) {
+      push @{$combos{$ithread}}, $combo;
+      $ithread++;
+      if ($ithread >= $NTHREADS) {$ithread = 0}
+    }
+    for (my $ithread = 0; $ithread < $NTHREADS; $ithread++) {
+      &writex($outpipe[$ithread], $combos{$ithread}, \@index, \@head, \@body, \@tail);
     }
   }
 }
