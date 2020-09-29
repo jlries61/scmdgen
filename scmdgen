@@ -26,7 +26,7 @@ scmdgen - Expand a base command sequence as specified and optionally run it
 
 =head1 Version
 
-1.21
+1.22
 
 =head1 Synopsis
 
@@ -111,7 +111,6 @@ $RSEED = 37;
 $HEADLABEL = "HEAD";
 $TAILLABEL = "TAIL";
 $DLM = $BLANK;
-$NTHREADS = 1;
 
 GetOptions(
   "input=s" => \$INPUT,
@@ -121,7 +120,6 @@ GetOptions(
   "baseext=s" => \$BASEEXT,
   "use_values" => \$USEVALUES,
   "ncombo=i" => \$NCOMBO,
-  "nthreads=i" => \$NTHREADS,
   "rseed=i" => \$RSEED,
   "headlabel=s" => \$HEADLABEL,
   "taillabel=s" => \$TAILLABEL,
@@ -241,16 +239,8 @@ if (defined($OUTPUT)) {open STDOUT, ">", $OUTPUT || die "Failure to open output 
 if (defined($OUTPUT) || !(defined($BASEOUT) or defined($EXEC))) {
   &writex(STDOUT, \@combos, \@index, \@head, \@body, \@tail)}
 if (defined($EXEC)) {
-  if ($NTHREADS == 1) {
-    open OUTPIPE, "|-", $EXEC or die "Failure to open pipe to $EXEC: $!\n";
-    &writex(OUTPIPE, \@combos, \@index, \@head, \@body, \@tail);
-    close OUTPIPE or warn "Failure to close pipe to $EXEC: $!\n";
-  } else {
-    my @outpipe = ();
-    for (my $ithread = 0; $ithread < $NTHREADS; $ithread++) {
-      open $outpipe[$ithread] , "|-", $EXEC or die "Failure to open pipe to $EXEC: $!\n";
-    }
-  }
+  open OUTPIPE, "|-", $EXEC or die "Failure to open pipe to $EXEC: $!\n";
+  &writex(OUTPIPE, \@combos, \@index, \@head, \@body, \@tail);
 }
 if (defined($BASEOUT)) {
   #Write individual output files
