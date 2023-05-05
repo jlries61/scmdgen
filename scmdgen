@@ -256,19 +256,20 @@ if (defined($EXEC)) {
     #close OUTPIPE or warn "Failure to close pipe to $EXEC: $!\n";
   } else {
     my @outpipe = ();
-    my %combos;
+    my @thrindex = ();
     for (my $ithread = 0; $ithread < $NTHREADS; $ithread++) {
       open $outpipe[$ithread] , "|-", $EXEC or die "Failure to open pipe to $EXEC: $!\n";
-      @{$combos{$ithread}} = ();
+      @{$thrindex[$ithread]} = ();
     }
-    my $ithread = 0;
-    foreach $combo (@combos) {
-      push @{$combos{$ithread}}, $combo;
+    my $ithread = 0;   # Thread index
+    foreach my $i (@index) {
+      push @{$thrindex[$ithread]}, $i;
       $ithread++;
       if ($ithread >= $NTHREADS) {$ithread = 0}
     }
     for (my $ithread = 0; $ithread < $NTHREADS; $ithread++) {
-      &writex($outpipe[$ithread], $combos{$ithread}, \@index, \@head, \@body, \@tail);
+      &writex($outpipe[$ithread], \@combos, \@{$thrindex[$ithread]},
+	      \@head, \@body, \@tail);
     }
   }
 }
@@ -468,7 +469,10 @@ sub writex($\@\@\@\@\@) {
   foreach my $line (@$phead) {&writeln($fh, $line)}
   foreach my $i (@$pindex) {
     my %combo = %{$$pcombos[$i]};
-    foreach my $line (@$pbody) {&writeln($fh, &sub($line, %combo))}
+    foreach my $line (@$pbody) {
+      my $transLine = &sub($line, %combo);
+      &writeln($fh, $transLine);
+    }
   }
   foreach my $line (@$ptail) {&writeln($fh, $line)}
 }
