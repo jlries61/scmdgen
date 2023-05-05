@@ -131,8 +131,7 @@ GetOptions(
   "rseed=i" => \$RSEED,
   "headlabel=s" => \$HEADLABEL,
   "taillabel=s" => \$TAILLABEL,
-  "dlm=s" => \$DLM,
-  "nthreads=i" => \$NTHREADS) || die;
+  "dlm=s" => \$DLM) || die;
 
 if (defined($NCOMBO) and $NCOMBO <= 0) {die "--ncombo has to be positive.\n"}
 if ($NTHREADS <= 0) {die "--nthreads has to be positive.\n"}
