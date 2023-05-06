@@ -1,0 +1,16 @@
+LABEL CRIM="per capita crime rate by town"
+label zn="proportion of residential land zoned for lots over 25,000 sq.ft."
+label INDUS="proportion of non-retail business acres per town."
+label CHAS="Charles River dummy variable (1 if tract bounds river; 0 otherwise)"
+label NOX="nitric oxides concentration (parts per 10 million)"
+label RM="average number of rooms per dwelling"
+label AGE="proportion of owner-occupied units built prior to 1940"
+label DIS="weighted distances to five Boston employment centres"
+label RAD="index of accessibility to radial highways"
+label TAX="full-value property-tax rate per $10,000"
+label PT="pupil-teacher ratio by town"
+label B="1000(Bk - 0.63)^2 where Bk is the proportion of blacks by town"
+label LSTAT="% lower status of the population"
+label MV="Median value of owner-occupied homes in $1000's"
+class CHAS 1="YES" 0="NO
+
