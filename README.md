@@ -131,7 +131,7 @@ scmdgen --input=2digit.txt --output=2digitoe.cmd N=0:8:2 M=1:9:2
 ```
 In this case, 2 is the amount by which to increment the two variables.
 
-One can pipe the output to a SPM like so:
+One can pipe the output to SPM like so:
 ```
 scmdgen --input=bostn2a.txt LOSSFUNC=LAD,LS,HUBER,RF | spmu
 ```
@@ -172,3 +172,12 @@ scmdgen --input=bostn2c.txt --exec=spmu \
 ```
 ## Delimited Variable Names
 To avoid confusion with literal text, it is sometimes desirable to surround variable names with a delimiter string.  For example, if the delimiter string is '%', the variable 'I' would be represented as '%I%'; conversely, with the delimiter removed, 'I' would be taken as literal text and thus would be unchanged.  To specify such a delimiter (which could be, but probably shouldn't be, more than one character), use the `--dlm` flag.
+
+## Multithreading
+If the `--exec` flag is specified and `--nthreads` flag is  set greater than 1, `scmdgen` will launch the specified number of instances of the specified program (not necessarily SPM) and will divide the requested variations as evenly as possible between them.  For example:
+
+```
+scmdgen --input=bostn2a.txt --exec=spmu --use_values LOSSFUNC=LAD,LS,HUBER,RF --baseout=bostn2a --nthreads=2
+```
+
+This will launch two parallel SPM instances building TreeNet models with the four specified loss functions, each session building two models.
