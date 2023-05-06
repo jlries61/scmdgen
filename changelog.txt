@@ -1,5 +1,9 @@
 scmdgen Change Log
 
+1.23: Fix abd reenable multithreading.
+
+1.22: Disable multithreading because it doesn't work.
+
 1.21: Bug fixes:
   a.  In a variable specification, only treat the first "=" as a delimiter.  Any
       subsequent ones are treated as part of a value.
