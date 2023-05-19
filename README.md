@@ -145,7 +145,7 @@ like so:
 scmdgen --input=bostn2a.txt --exec=most LOSSFUNC=LAD,LS,HUBER,RF
 ```
 ## Multiple Combination Sets
-While it is often convenient to be able to request all combinations of a particular set of parameters, or a randomly drawn subset thereof, it is often desirable to vary one parameter while keeping the others constant, or to vary two or more parameters in concert with each other.  `scmdgen` supports such cases by allowing the user to specify multiple sets of combinations, separated by "/".  The slashes are separate arguments and muse be separated from the neighboring arguments by spaces.  For example, consider the following base command file (`bostn2b.txt`).
+While it is often convenient to be able to request all combinations of a particular set of parameters, or a randomly drawn subset thereof, it is often desirable to vary one parameter while keeping the others constant, or to vary two or more parameters in concert with each other.  `scmdgen` supports such cases by allowing the user to specify multiple sets of combinations, separated by "/".  The slashes are separate arguments and must be separated from the neighboring arguments by spaces.  For example, consider the following base command file (`bostn2b.txt`).
 ```
 HEAD submit fpath
 HEAD use boston
