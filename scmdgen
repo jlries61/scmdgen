@@ -130,6 +130,7 @@ GetOptions(
   "rseed=i" => \$RSEED,
   "headlabel=s" => \$HEADLABEL,
   "taillabel=s" => \$TAILLABEL,
+  "nthreads=i" => \$NTHREADS,
   "dlm=s" => \$DLM) || die;
 
 if (defined($NCOMBO) and $NCOMBO <= 0) {die "--ncombo has to be positive.\n"}
